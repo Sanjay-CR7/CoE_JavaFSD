@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latest Movies</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    /* Custom animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    /* Custom hover effects */
+    .movie-card:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+
+    /* Custom typography */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Georgia', serif;
+    }
+
+    /* Spacing and layout */
+    .container {
+      padding: 2rem;
+    }
+
+    .movie-card {
+      margin-bottom: 1rem;
+      background-color: #fff;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .movie-card .card-body {
+      background-color: #fff;
+    }
+
+    /* YouTube trailer styling */
+    .trailer-container {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .trailer-container iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 400px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .video-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+      gap: 15px; /* Space between videos */
+      width: 100%;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 315px; /* Adjust height as needed */
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Movie Reviews</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="latest-movies.html">Latest Movies</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-4">
+    <h1 class="text-center">Latest Movies of the Year</h1>
+    <p class="text-center">Explore the latest movies released this year.</p>
+
+    <!-- Movie Grid -->
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="latest-movies-grid"></div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // API Key for OMDb API
+    const API_KEY = "ef655ee5"; // Your OMDb API key
+    const API_URL = `https://www.omdbapi.com/?apikey=${API_KEY}`;
+
+    // Fetch latest movies (example: search for movies released in 2023)
+    async function fetchLatestMovies() {
+      try {
+        const response = await fetch(`${API_URL}&s=2023&type=movie`);
+        const data = await response.json();
+        return data.Search || [];
+      } catch (error) {
+        console.error("Error fetching latest movies:", error);
+        return [];
+      }
+    }
+
+    // Render latest movies
+    async function renderLatestMovies() {
+      const movies = await fetchLatestMovies();
+      const latestMoviesGrid = document.getElementById("latest-movies-grid");
+      latestMoviesGrid.innerHTML = movies
+        .map(
+          (movie) => `
+          <div class="col fade-in">
+            <div class="card h-100 movie-card">
+              <img src="${movie.Poster}" class="card-img-top" alt="${movie.Title}">
+              <div class="card-body">
+                <h5 class="card-title">${movie.Title}</h5>
+                <p class="card-text">Year: ${movie.Year}</p>
+              </div>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    // Initial load
+    renderLatestMovies();
+  </script>
+</body>
+</html>
